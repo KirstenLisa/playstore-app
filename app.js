@@ -19,15 +19,13 @@ app.get('/apps', (req, res) => {
         .send('Genre must be Action, Puzzle, Strategy, Casual, Arcade, Card')
       }
     }
-
+     let results = []
     if (genre) {
-      let results = apps
-      .filter(app =>
-        app
-          .Genres
-          .toLowerCase()
-          .includes(genre.toLowerCase()));
-      } let results = apps;
+       results = apps.filter(app =>
+        app["Genres"].toLowerCase().indexOf(genre.toLowerCase()) ! == -1 
+       );
+      } 
+    //let results = apps;
 
     if (sort) {
       if (!['rating', 'app'].includes(sort)) {
@@ -36,12 +34,11 @@ app.get('/apps', (req, res) => {
         .send('Sort must be one of rating or app');
             }
           }
-    
-    
+    //sort by rating
     if (sort) {
       results
         .sort((a, b) => {
-          return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1 : 0;
+          return a["Rating"] > b["Rating"] ? 1: a["Rating"] < b["Rating"] ? -1 : 0;
             });
           }
   
