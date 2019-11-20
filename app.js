@@ -10,7 +10,26 @@ const apps = require('./playstore-data.js');
 
 app.get('/apps', (req, res) => {
     const { genre, sort } = req.query;
-    let results = apps
+    
+    if (sort) {
+      if (!['rating', 'app'].includes(sort)) {
+        return res
+        .status(400)
+        .send('Sort must be one of rating or app');
+            }
+        } 
+
+    if (sort) {
+      if (sort === "rating") {
+        apps.sort((a, b) => {
+        return a["Rating"] > b["Rating"] ? 1: a["Rating"] < b["Rating"] ? -1 : 0;
+      });
+     } else if (sort === "app") {
+       apps.sort((a, b) => {
+        return a["App"] > b["App"] ? 1: a["App"] < b["App"] ? -1 : 0
+       })
+     }  
+    }
 
 
     if (genre) {
@@ -19,26 +38,14 @@ app.get('/apps', (req, res) => {
         .status(400)
         .send('Genre must be Action, Puzzle, Strategy, Casual, Arcade, Card')
       }
-      results = apps.filter(app =>
-      app["Genres"].toLowerCase().indexOf(genre.toLowerCase()) !== -1 
-      );
-    }
+      let results = apps.filter(app => app["Genres"].toLowerCase() == genre);
+      return res.json(results)
+    }    
     
-    
-    if (sort) {
-      if (!['rating', 'app'].includes(sort)) {
-        return res
-        .status(400)
-        .send('Sort must be one of rating or app');
-            }
-      results
-      .sort((a, b) => {
-      return a["Rating"] > b["Rating"] ? 1: a["Rating"] < b["Rating"] ? -1 : 0;
-        });
-        }      
-  
+   
+
     res
-      .json(results);
+      .json(apps);
   });
 
   
